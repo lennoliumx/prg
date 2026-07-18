@@ -1,0 +1,5 @@
+package code13;
+
+public enum Icecream {
+  VANILLA, CHOCOLATE, STRAWBERRY, LEMON, AMARENA, PISTACHE, STRACCIATELLA
+}

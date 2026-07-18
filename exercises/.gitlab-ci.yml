@@ -1,0 +1,46 @@
+# Based on Maven CI template by GitLab
+# runs mvn compile to test that compilation works
+
+stages:
+  - compile
+
+variables:
+  # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
+  MAVEN_OPTS: >-
+    -Dhttps.protocols=TLSv1.2
+    -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+    -Dorg.slf4j.simpleLogger.showDateTime=true
+    -Djava.awt.headless=true
+
+  # As of Maven 3.3.0 instead of this you MAY define these options in `.mvn/maven.config` so the same config is used
+  # when running from the command line.
+  # As of Maven 3.6.1, the use of `--no-tranfer-progress` (or `-ntp`) suppresses download and upload messages. The use
+  # of the `Slf4jMavenTransferListener` is no longer necessary.
+  # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
+  MAVEN_CLI_OPTS: >-
+    --batch-mode
+    --errors
+    --fail-at-end
+    --show-version
+    --no-transfer-progress
+    -DinstallAtEnd=true
+    -DdeployAtEnd=true
+
+# Use a docker image from dockerhub with Maven 3.8.5 and OpenJDK 17.0.2 installed
+image:
+  name: maven:3.9-eclipse-temurin-25
+  pull_policy: always
+
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_NAME"'
+# Be aware that `mvn deploy` will install the built jar into this repository. If you notice your cache size
+# increasing, consider adding `-Dmaven.install.skip=true` to `MAVEN_OPTS` or in `.mvn/maven.config`
+cache:
+  paths:
+    - .m2/repository
+
+# job to run mvn compile
+maven-compile:
+  stage: compile
+  script:
+    - 'mvn $MAVEN_CLI_OPTS compile'

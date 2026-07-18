@@ -1,6 +1,0 @@
-[submodule "material"]
-	path = material
-	url = https://git.in.htwg-konstanz.de/eiglsperger/2026s-epr/material.git
-[submodule "exercises"]
-	path = exercises
-	url = https://git.in.htwg-konstanz.de/eiglsperger/2026s-epr/exercises.git
